@@ -16,7 +16,9 @@ import org.unimodules.core.interfaces.SingletonModule;
 import expo.modules.constants.ConstantsPackage;
 import expo.modules.permissions.PermissionsPackage;
 import expo.modules.filesystem.FileSystemPackage;
-
+import expo.modules.videothumbnails.VideoThumbnailsPackage;
+import expo.modules.imagemanipulator.ImageManipulatorPackage;
+import expo.modules.imagepicker.ImagePickerPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
      new ReactAdapterPackage(),
      new ConstantsPackage(),
      new PermissionsPackage(),
-     new FileSystemPackage()
+     new FileSystemPackage(),
+     new ImageManipulatorPackage(),
+     new ImagePickerPackage(),
+     new VideoThumbnailsPackage()
   ), Arrays.<SingletonModule>asList());
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {

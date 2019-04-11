@@ -1,18 +1,43 @@
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
+import React, { Component } from "react";
+import { Platform, StyleSheet, Button, View, Image, Text } from "react-native";
+import { getThumbnailAsync } from "expo-video-thumbnails";
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 
 export default class App extends Component {
+  state = {
+    buttonTitle: "Take video",
+    video: null,
+    image: null
+  };
+
+  runMyAwesomeFunction = async () => {
+    if (!this.state.video) {
+      await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      const { uri } = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos
+      });
+      this.setState({ video: uri, buttonTitle: "Generate thumbnail <3" });
+    } else {
+      const { uri, width, height } = await getThumbnailAsync(this.state.video, {
+        time: 3000
+      });
+      this.setState({ image: uri, width, height });
+    }
+  };
+
   render() {
+    const { buttonTitle, image, width, height } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Button onPress={this.runMyAwesomeFunction} title={buttonTitle} />
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{ width: width / 5, height: height / 5 }}
+          />
+        )}
+        <Text>{image}</Text>
       </View>
     );
   }
@@ -21,18 +46,8 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  }
 });
